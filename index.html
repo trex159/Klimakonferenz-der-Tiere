@@ -160,12 +160,13 @@
 
 <div id="cleanupGame">
     <h2>Hilf den Hechten, den Main zu säubern, indem du die Becher in den Mülleimer ziehst.</h2>
+    <p1>Wenn du keine Maus hast, achte darauf, etwas länger auf die Becher zu klicken, um sie in den Mülleimer zu ziehen.</p1>
     <div id="lake"></div>
     <div id="trashBin"></div>
 </div>
 
 <div id="cleanupGamef">
-    <h2>Hilf den Hechten, den Main zu säubern, indem du die Becher in den Mülleimer ziehst.</h2>
+    <h2>Sehr Gut! Die Hechte sind nun glücklich.</h2>
     <div id="lake"></div>
     <button class="button" onclick="document.location.reload()">Zurück zum Start</button>
 </div>
@@ -374,7 +375,7 @@
         if (lake.getElementsByClassName('trash').length === 0) {
              document.getElementById('cleanupGame').style.display = 'none';
              document.getElementById('cleanupGamef').style.display = 'block';
-            alert('Herzlichen Glückwunsch! Du hast den Main erfolgreich gesäubert.');
+    
         }
     }
 </script>
