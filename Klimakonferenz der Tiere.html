@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klimakonferenz der Tiere</title>
+    <link rel="icon" type="icon" href="https://www.pngall.com/wp-content/uploads/2016/06/Environment-PNG-Picture.png">
+   <style>
+    body {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background-color: #87CEEB; 
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+    #startScreen, #gameScreen, #instructionsScreen, #chatScreen, #cleanupGame,  #cleanupGamef {
+        display: none;
+    }
+    #startScreen {
+        display: block;
+    }
+    .button {
+        display: inline-block;
+        margin: 20px;
+        padding: 10px 20px;
+        background-color: #FFD700; 
+        color: black;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.2em;
+        transition: background-color 0.3s;
+    }
+    .button:hover {
+        background-color: #FFC107; 
+    }
+    #dialogue {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #FFFACD; 
+        border-radius: 10px;
+        display: inline-block;
+        border: 2px solid #FFD700;
+    }
+    #chatContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #chatBox {
+        width: 70%;
+        height: 300px;
+        overflow-y: scroll;
+        border: 3px solid #FFD700;
+        padding: 10px;
+        background-color: #FFFACD;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    .answer-button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        background-color: #FFD700;
+        color: black;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1em;
+        transition: background-color 0.3s;
+    }
+    .answer-button:hover {
+        background-color: #FFC107;
+    }
+    #lake {
+        width: 80%;
+        height: 400px;
+        background: url('See.jpg') no-repeat center center;
+        background-size: cover;
+        position: relative;
+        margin: 20px auto;
+        border: 3px solid #FFD700;
+        border-radius: 10px;
+    }
+    .trash {
+        width: 50px;
+        height: 50px;
+        background: url('Müll.png') no-repeat center center;
+        background-size: cover;
+        position: absolute;
+        cursor: pointer;
+    }
+    #trashBin {
+        width: 200px;
+        height: 200px;
+        background: url('Mülleimer.png') no-repeat center center;
+        background-size: cover;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 3px solid #FFD700;
+        border-radius: 10px;
+    }
+</style>
+
+</head>
+<body>
+
+<div id="startScreen">
+    <h1>Klimakonferenz der Tiere</h1>
+    <button class="button" onclick="startGame()">Spiel Starten</button>
+    <button class="button" onclick="showInstructions()">Anleitung</button>
+</div>
+
+<div id="instructionsScreen">
+    <h2>Anleitung</h2>
+    <p>Willkommen zur Klimakonferenz der Tiere! In diesem Spiel kannst du verschiedenen Tieren zuhören, wie sie über den Klimawandel sprechen und gemeinsam Lösungen suchen. Klicke auf „Weiter“, um die Dialoge zu lesen und zu sehen, wie die Tiere ihre Ideen teilen. Danach kannst du mit den Tieren chatten und ihnen helfen, den Main zu säubern.</p>
+    <button class="button" onclick="showStartScreen()">Zurück</button>
+</div>
+
+<div id="gameScreen">
+    <h2>Klimakonferenz der Tiere</h2>
+    <div id="dialogue"></div>
+    <button class="button" onclick="nextDialogue()">Weiter</button>
+</div>
+
+<div id="chatScreen">
+    <h2>Chatte mit den Tieren</h2>
+    <p>WICHTIG: vergiss nicht mitzuscrollen!</p>
+    <div id="chatContainer">
+        <div id="chatBox"></div>
+        <div id="answersContainer"></div>
+    </div>
+</div>
+
+<div id="cleanupGame">
+    <h2>Hilf den Hechten, den Main zu säubern, indem du die Becher in den Mülleimer ziehst.</h2>
+    <div id="lake"></div>
+    <div id="trashBin"></div>
+</div>
+
+<div id="cleanupGamef">
+    <h2>Hilf den Hechten, den Main zu säubern, indem du die Becher in den Mülleimer ziehst.</h2>
+    <div id="lake"></div>
+    <button class="button" onclick="document.location.reload()">Zurück zum Start</button>
+</div>
+
+<script>
+    const dialogues = [
+        "Hirsch: Willkommen zur Klimakonferenz der Tiere! Wir müssen dringend über den Klimawandel sprechen.",
+        "Fuchs: Ja, der Klimawandel bedroht unsere Lebensräume. Was können wir tun, um ihn zu stoppen?",
+        "Vogel: Wir könnten mehr Bäume pflanzen und unsere Wälder schützen.",
+        "Hecht: Saubere Flüsse und Meere sind auch wichtig. Plastikverschmutzung muss reduziert werden.",
+        "Bär: Lasst uns zusammenarbeiten und unseren Planeten retten!"
+    ];
+    let dialogueIndex = 0;
+
+    const chatSequences = [
+        {
+            animal: "Hirsch",
+            messages: [
+                {
+                    text: "Was denkst du über den Klimawandel?",
+                    responses: [
+                        { text: "Er ist schlecht für uns alle.", reply: "Ja, da hast du Recht. Deine Einstellung gefällt mir." },
+                        { text: "Ich weiß nicht viel darüber.", reply: "Das ist in Ordnung. Es ist wichtig, sich zu informieren. Er ist schlecht für uns alle und wird früher oder später zu einer noch schlimmeren Katastrophe führen, als er jetzt schon ist." },
+                        { text: "Ist das wirklich ein Problem?", reply: "Ja, es ist ein großes Problem. Er ist schlecht für uns alle und wird früher oder später zu einer noch schlimmeren Katastrophe führen, als er jetzt schon ist." }
+                    ]
+                },
+                {
+                    text: "Wir müssen etwas tun.",
+                    responses: [
+                        { text: "Was können wir tun?", reply: "Wir können Einiges tun." },
+                        { text: "Warum ist es wichtig?", reply: "Es ist wichtig, weil unser Planet in Gefahr ist, das solltest du inzwischen wissen!" },
+                        { text: "Wie kann ich helfen?", reply: "Du kannst helfen, indem du bewusst lebst und Andere informierst." }
+                    ]
+                },
+                {
+                    text: "Wir sollten sofort mehr Bäume pflanzen und den Müll aus den Seen entfernen.",
+                    responses: [
+                        { text: "Ich werde helfen!", reply: "Das ist großartig! Jeder Beitrag zählt." },
+                        { text: "Klingt schwer.", reply: "Es kann schwer sein, aber gemeinsam schaffen wir es." },
+                        { text: "Warum ich?", reply: "Jeder kann einen Unterschied machen, auch du." }
+                    ]
+                }
+            ]
+        },
+        {
+            animal: "Fuchs",
+            messages: [
+                {
+                    text: "Was hältst du von der Idee, mehr Bäume zu pflanzen?",
+                    responses: [
+                        { text: "Das ist eine tolle Idee!", reply: "Ja, es ist eine tolle Idee und hilft sehr." },
+                        { text: "Wie hilft das?", reply: "Bäume nehmen CO2 auf und verbessern die Luftqualität, das wäre in unserer jetzigen Lage sehr nützlich!" },
+                        { text: "Kann das wirklich etwas ändern?", reply: "Ja, jeder Baum macht einen Unterschied." }
+                    ]
+                },
+                {
+                    text: "Also, möchtest du jetzt helfen, Bäume zu Pflanzen?",
+                    responses: [
+                        { text: "Wie pflanze ich einen Baum?", reply: "Es ist einfach! Du kannst Setzlinge in deinem Garten pflanzen, diese werden dann wachsen und zu Bäumen! Ist das nicht cool?" },
+                        { text: "Klar!", reply: "Super!" },
+                        { text: "Können wir noch etwas tun?", reply: "Ja, wir können auch Müll aufsammeln und weniger Plastik verwenden." }
+                    ]
+                },
+                {
+                    text: "Wie gesagt, jeder Baum zählt. Wir können aber auch jetzt, direkt Müll aus dem Main aufsammeln, um den Hechten zu helfen.",
+                    responses: [
+                        { text: "Ich bin dabei!", reply: "Super! Gemeinsam schaffen wir das." },
+                        { text: "Das ist schwierig.", reply: "Es kann schwierig sein, aber jeder Beitrag zählt. Ich werte das jetzt trotzdem als Ja." },
+                        { text: "Warum ist das wichtig?", reply: "Es ist wichtig, weil unsere Umwelt geschützt werden muss. Ich werte das jetzt trotzdem als Ja." }
+                    ]
+                },
+                {
+                    text: "Das Spiel startet, wenn du WEITER klickst.",
+                    responses: [
+                        { text: "WEITER", reply: "WEITER" },
+                        { text: "WEITER", reply: "EWEITER" },
+                        { text: "WEITER", reply: "WEITER" }
+                    ]
+                }
+            ]
+        }
+    ];
+    let chatIndex = 0;
+    let chatStep = 0;
+
+    function startGame() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'block';
+        showDialogue();
+    }
+
+    function showInstructions() {
+        document.getElementById('startScreen').style.display = 'none';
+        document.getElementById('instructionsScreen').style.display = 'block';
+    }
+
+    function showStartScreen() {
+        document.getElementById('instructionsScreen').style.display = 'none';
+        document.getElementById('gameScreen').style.display = 'none';
+        document.getElementById('chatScreen').style.display = 'none';
+        document.getElementById('cleanupGame').style.display = 'none';
+        document.getElementById('startScreen').style.display = 'block';
+    }
+
+    function showDialogue() {
+        document.getElementById('dialogue').innerText = dialogues[dialogueIndex];
+    }
+
+    function nextDialogue() {
+        dialogueIndex++;
+        if (dialogueIndex < dialogues.length) {
+            showDialogue();
+        } else {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'block';
+            startChat();
+        }
+    }
+
+    function startChat() {
+        chatIndex = 0;
+        chatStep = 0;
+        showChatMessage();
+    }
+
+    function showChatMessage() {
+        const chatBox = document.getElementById('chatBox');
+        const answersContainer = document.getElementById('answersContainer');
+        chatBox.innerHTML += `<p>${chatSequences[chatIndex].animal}: ${chatSequences[chatIndex].messages[chatStep].text}</p>`;
+        answersContainer.innerHTML = '';
+        chatSequences[chatIndex].messages[chatStep].responses.forEach((response, index) => {
+            const button = document.createElement('button');
+            button.innerText = response.text;
+            button.classList.add('answer-button');
+            button.onclick = () => handleResponse(index);
+            answersContainer.appendChild(button);
+        });
+    }
+
+    function handleResponse(responseIndex) {
+        const chatBox = document.getElementById('chatBox');
+        const playerResponse = chatSequences[chatIndex].messages[chatStep].responses[responseIndex].text;
+        const animalReply = chatSequences[chatIndex].messages[chatStep].responses[responseIndex].reply;
+        chatBox.innerHTML += `<p>Du: ${playerResponse}</p>`;
+        chatBox.innerHTML += `<p>${chatSequences[chatIndex].animal}: ${animalReply}</p>`;
+        chatStep++;
+        if (chatStep < chatSequences[chatIndex].messages.length) {
+            showChatMessage();
+        } else {
+            chatIndex++;
+            if (chatIndex < chatSequences.length) {
+                chatStep = 0;
+                showChatMessage();
+            } else {
+                startCleanupGame();
+            }
+        }
+    }
+
+    function startCleanupGame() {
+        document.getElementById('chatScreen').style.display = 'none';
+        document.getElementById('cleanupGame').style.display = 'block';
+        initializeCleanupGame();
+    }
+
+    function initializeCleanupGame() {
+        const lake = document.getElementById('lake');
+        lake.innerHTML = '';
+
+        for (let i = 0; i < 5; i++) {
+            const trash = document.createElement('div');
+            trash.className = 'trash';
+            trash.style.top = Math.random() * (lake.offsetHeight - 50) + 'px';
+            trash.style.left = Math.random() * (lake.offsetWidth - 50) + 'px';
+            trash.setAttribute('draggable', true);
+            trash.addEventListener('dragstart', dragStart);
+            lake.appendChild(trash);
+        }
+
+        const trashBin = document.getElementById('trashBin');
+        trashBin.addEventListener('dragover', allowDrop);
+        trashBin.addEventListener('drop', dropTrashInBin);
+    }
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.style.cssText);
+    }
+
+    function allowDrop(e) {
+        e.preventDefault();
+    }
+
+    function dropTrashInBin(e) {
+        e.preventDefault();
+        const cssText = e.dataTransfer.getData('text/plain');
+        const lake = document.getElementById('lake');
+        const trash = lake.querySelector(`div[style="${cssText}"]`);
+        if (trash) {
+            lake.removeChild(trash);
+        }
+        checkIfCleanupComplete();
+    }
+
+    function checkIfCleanupComplete() {
+        const lake = document.getElementById('lake');
+        if (lake.getElementsByClassName('trash').length === 0) {
+             document.getElementById('cleanupGame').style.display = 'none';
+             document.getElementById('cleanupGamef').style.display = 'block';
+            alert('Herzlichen Glückwunsch! Du hast den Main erfolgreich gesäubert.');
+        }
+    }
+</script>
+
+</body>
+</html>
